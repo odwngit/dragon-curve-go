@@ -15,7 +15,7 @@ func main() {
 	const draw_scale int = 2
 	defer fmt.Println("Finished!")
 
-	// fmt.Printf("Calculating turns with %v iterations...\n", iterations)
+	fmt.Printf("Calculating turns with %v iterations...\n", iterations)
 	
 	// byte 1 = right turn
 	// byte 2 = left turn
@@ -41,7 +41,7 @@ func main() {
 		iterations--
 	}
 
-	// fmt.Printf("Turns: %v\n", len(turns))
+	fmt.Printf("Turns: %v\n", len(turns))
 
 	points := make([]Point, len(turns)+1)
 	points[0] = Point{0, 0}
