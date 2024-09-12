@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"slices"
 	"github.com/fogleman/gg"
+	"github.com/schollz/progressbar/v3"
 )
 
 type Point struct {
@@ -11,7 +14,17 @@ type Point struct {
 }
 
 func main() {
-	var iterations int = 24
+	if len(os.Args) != 2 {
+		fmt.Println("ERROR: Wrong number of arguments supplied. (expected usage: dragon-curve <iterations>)")
+		os.Exit(1)
+	}
+
+	iterations, err := strconv.Atoi(os.Args[1]) // Handling errors
+	if err != nil {
+		fmt.Println("ERROR: Bad syntax for <iterations>.")
+		os.Exit(1)
+	}
+	
 	const draw_scale int = 2
 	defer fmt.Println("Finished!")
 
@@ -96,16 +109,22 @@ func main() {
 		points[i].y -= bounds_min.y
 	}
 
+	fmt.Println("Drawing image...")
+
 	dc := gg.NewContext(bounds_max.x - bounds_min.x, bounds_max.y - bounds_min.y)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
 	dc.MoveTo(float64(points[0].x), float64(points[0].y))
+	
+	bar := progressbar.Default(int64(len(points)-1))
 
 	for i := 0; i < len(points)-1; i++ {
 		// 2 lines below cause weird antialiasing
 		//dc.DrawLine(float64(points[i].x), float64(points[i].y), float64(points[i+1].x), float64(points[i+1].y))
 		//dc.Stroke()
+
+		bar.Add(1)
 
 		if points[i].x == points[i+1].x { // Then the next point is somewhere vertically
 			if points[i].y > points[i+1].y { // Then the next point is above current
